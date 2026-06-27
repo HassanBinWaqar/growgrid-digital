@@ -92,11 +92,6 @@ function SplashScreen() {
   return (
     <section className={`splashScreen ${isHidden ? "isHidden" : ""}`} aria-label="GrowGrid Digital loading screen">
       <div className="splashGlow" />
-      <div className="splashOrbit" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
       <div className="splashShell">
         <div className="splashBrandPanel">
           <div className="splashLogoWrap" aria-hidden="true">
@@ -116,22 +111,15 @@ function SplashScreen() {
           <div className="splashStages">
             <small className={progress >= 34 ? "isComplete" : ""}>Strategy loaded</small>
             <small className={progress >= 68 ? "isComplete" : ""}>Campaigns synced</small>
-            <small className={progress >= 96 ? "isComplete" : ""}>Revenue tracking live</small>
           </div>
         </div>
 
         <div className="splashDashboard" aria-hidden="true">
           <div className="splashDashTop">
-            <span>Live Campaign Command Center</span>
+            <span>Campaign workspace</span>
             <strong>+42%</strong>
           </div>
           <div className="splashChart">
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
             <svg viewBox="0 0 220 92" role="img" aria-hidden="true">
               <path d="M8 78 C36 58 42 64 63 42 S101 51 122 29 158 39 180 17 202 21 214 9" />
             </svg>
@@ -142,19 +130,9 @@ function SplashScreen() {
               Growth
             </span>
             <span>
-              <strong>8,670</strong>
+              <strong>8.6k</strong>
               Leads
             </span>
-            <span>
-              <strong>$256K</strong>
-              Revenue
-            </span>
-          </div>
-          <div className="splashChannels">
-            <small>SEO</small>
-            <small>PPC</small>
-            <small>Meta Ads</small>
-            <small>Email</small>
           </div>
         </div>
       </div>
