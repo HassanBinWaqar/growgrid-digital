@@ -2698,6 +2698,12 @@ blockquote cite span {
   transform: translateY(-1px) scale(0.96);
 }
 
+.whatsappIcon {
+  width: 31px;
+  height: 31px;
+  fill: currentColor;
+}
+
 .dashboardShell {
   min-height: 100vh;
   padding: 26px max(20px, calc((100vw - 1180px) / 2)) 64px;
