@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useState } from "react";
+import { StrictMode, type FormEvent, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
@@ -12,17 +12,21 @@ import {
   ClipboardCheck,
   Code2,
   FileText,
+  Facebook,
   Globe2,
   GraduationCap,
   HeartPulse,
   Home,
+  Instagram,
   Landmark,
   LayoutDashboard,
   Lightbulb,
   LineChart,
+  Linkedin,
   Mail,
   Megaphone,
   Menu,
+  MessageCircle,
   MousePointerClick,
   Rocket,
   Search,
@@ -31,6 +35,7 @@ import {
   Star,
   Target,
   TrendingUp,
+  Twitter,
   UsersRound,
   Video,
   X,
@@ -38,6 +43,15 @@ import {
 import "./styles.css";
 
 type IconComponent = typeof Search;
+
+type Review = {
+  id: number;
+  quote: string;
+  name: string;
+  role: string;
+  result: string;
+  avatar: string;
+};
 
 function SplashScreen() {
   const [isHidden, setIsHidden] = useState(false);
@@ -396,8 +410,9 @@ const faqs = [
   ["Do you require long-term contracts?", "We recommend enough runway to test and optimize properly, but we keep agreements transparent and tied to clear goals."],
 ] as const;
 
-const testimonials = [
+const initialReviews: Review[] = [
   {
+    id: 1,
     quote: "GrowGrid Digital transformed our online presence and helped us scale revenue like never before.",
     name: "John Carter",
     role: "CEO, Carter Logistics",
@@ -405,6 +420,7 @@ const testimonials = [
     avatar: "/client-avatar-1.jpg",
   },
   {
+    id: 2,
     quote: "The best marketing investment we've made. Professional, reliable, and results-driven team.",
     name: "Sarah Wilson",
     role: "Marketing Director, Bright Homes",
@@ -412,12 +428,20 @@ const testimonials = [
     avatar: "/client-avatar-2.jpg",
   },
   {
+    id: 3,
     quote: "Their reporting finally connected our ad spend to pipeline, not just clicks and impressions.",
     name: "Mia Chen",
     role: "Founder, Northline Studio",
     result: "-31% cost per lead",
     avatar: "/client-avatar-3.jpg",
   },
+];
+
+const socialLinks = [
+  ["LinkedIn", "https://www.linkedin.com/", Linkedin],
+  ["Twitter", "https://twitter.com/", Twitter],
+  ["Facebook", "https://www.facebook.com/", Facebook],
+  ["Instagram", "https://www.instagram.com/", Instagram],
 ] as const;
 
 const navItems = [
@@ -433,6 +457,12 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<(typeof services)[number] | null>(null);
   const [isLeadSubmitted, setIsLeadSubmitted] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [reviewForm, setReviewForm] = useState({
+    name: "",
+    role: "",
+    quote: "",
+  });
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -481,6 +511,31 @@ function App() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedService]);
+
+  const handleReviewSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const name = reviewForm.name.trim();
+    const role = reviewForm.role.trim();
+    const quote = reviewForm.quote.trim();
+
+    if (!name || !role || !quote) {
+      return;
+    }
+
+    const avatarIndex = (reviews.length % 4) + 1;
+    const nextReview: Review = {
+      id: Date.now(),
+      name,
+      role,
+      quote,
+      result: "New client review",
+      avatar: `/client-avatar-${avatarIndex}.jpg`,
+    };
+
+    setReviews((currentReviews) => [nextReview, ...currentReviews]);
+    setReviewForm({ name: "", role: "", quote: "" });
+  };
 
   return (
     <>
@@ -816,26 +871,64 @@ function App() {
       </section>
 
       <section className="testimonials" aria-label="Client testimonials">
-        {testimonials.map((testimonial) => (
-          <blockquote key={testimonial.name}>
-            <div className="testimonialTop">
-              <img src={testimonial.avatar} alt={`${testimonial.name} client portrait`} loading="lazy" />
-              <div>
-                <div className="stars">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <Star key={index} size={16} fill="currentColor" />
-                  ))}
+        <div className="reviewIntro">
+          <p className="eyebrow">Client Reviews</p>
+          <h2>Real feedback, updated instantly.</h2>
+          <p>Clients can submit a review and see it appear at the top of the list immediately.</p>
+        </div>
+        <form className="reviewForm" onSubmit={handleReviewSubmit}>
+          <label>
+            Name
+            <input
+              type="text"
+              value={reviewForm.name}
+              placeholder="Your name"
+              onChange={(event) => setReviewForm((form) => ({ ...form, name: event.target.value }))}
+            />
+          </label>
+          <label>
+            Company / Role
+            <input
+              type="text"
+              value={reviewForm.role}
+              placeholder="CEO, Carter Logistics"
+              onChange={(event) => setReviewForm((form) => ({ ...form, role: event.target.value }))}
+            />
+          </label>
+          <label className="reviewFull">
+            Review
+            <textarea
+              value={reviewForm.quote}
+              placeholder="Share your experience with GrowGrid Digital..."
+              onChange={(event) => setReviewForm((form) => ({ ...form, quote: event.target.value }))}
+            />
+          </label>
+          <button className="primaryBtn reviewFull" type="submit">
+            Add Review <ArrowRight size={18} />
+          </button>
+        </form>
+        <div className="reviewList">
+          {reviews.map((testimonial) => (
+            <blockquote key={testimonial.id}>
+              <div className="testimonialTop">
+                <img src={testimonial.avatar} alt={`${testimonial.name} client portrait`} loading="lazy" />
+                <div>
+                  <div className="stars">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Star key={index} size={16} fill="currentColor" />
+                    ))}
+                  </div>
+                  <strong>{testimonial.result}</strong>
                 </div>
-                <strong>{testimonial.result}</strong>
               </div>
-            </div>
-            "{testimonial.quote}"
-            <cite>
-              <span>{testimonial.name}</span>
-              {testimonial.role}
-            </cite>
-          </blockquote>
-        ))}
+              "{testimonial.quote}"
+              <cite>
+                <span>{testimonial.name}</span>
+                {testimonial.role}
+              </cite>
+            </blockquote>
+          ))}
+        </div>
       </section>
 
       <section className="industries">
@@ -1004,6 +1097,13 @@ function App() {
             </span>
           </a>
           <p>We help businesses grow with data-driven digital marketing strategies.</p>
+          <div className="footerSocials" aria-label="Social media links">
+            {socialLinks.map(([label, href, Icon]) => (
+              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}>
+                <Icon size={18} />
+              </a>
+            ))}
+          </div>
         </div>
         <div>
           <h3>Quick Links</h3>
@@ -1036,6 +1136,15 @@ function App() {
       </footer>
       <a className="stickyMobileCta" href="#contact">
         Book Free Audit <ArrowRight size={16} />
+      </a>
+      <a
+        className="whatsappFloat"
+        href="https://wa.me/15551234567?text=Hi%20GrowGrid%20Digital%2C%20I%20want%20to%20discuss%20digital%20marketing%20services."
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Chat with GrowGrid Digital on WhatsApp"
+      >
+        <MessageCircle size={26} />
       </a>
       {selectedService ? (
         <div className="serviceModal" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">

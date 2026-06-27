@@ -1923,11 +1923,69 @@ footer p {
 
 .testimonials {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 360px));
-  justify-content: center;
-  gap: 18px;
-  padding: 64px 20px;
+  grid-template-columns: minmax(280px, 0.82fr) minmax(320px, 1.18fr);
+  gap: 28px;
+  align-items: start;
+  padding: 64px max(20px, calc((100vw - 1180px) / 2));
   background: linear-gradient(180deg, #fff, #f7faff);
+}
+
+.reviewIntro {
+  position: sticky;
+  top: 20px;
+}
+
+.reviewIntro p:not(.eyebrow) {
+  color: #56637a;
+  line-height: 1.75;
+}
+
+.reviewForm {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e1e9f4;
+  border-radius: 8px;
+  box-shadow: 0 18px 38px rgba(25, 45, 78, 0.09);
+}
+
+.reviewForm label {
+  display: grid;
+  gap: 7px;
+  color: #26374f;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.reviewForm input,
+.reviewForm textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 13px;
+  color: #17243a;
+  font: inherit;
+  background: #f8fbff;
+  border: 1px solid #dce6f3;
+  border-radius: 7px;
+}
+
+.reviewForm textarea {
+  min-height: 118px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+.reviewFull,
+.reviewList {
+  grid-column: 1 / -1;
+}
+
+.reviewList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
 }
 
 blockquote {
@@ -2400,6 +2458,33 @@ blockquote cite span {
   display: none;
 }
 
+.whatsappFloat {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  color: #fff;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  border-radius: 50%;
+  box-shadow: 0 18px 36px rgba(18, 140, 126, 0.32);
+  transition:
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.whatsappFloat:hover {
+  box-shadow: 0 22px 44px rgba(18, 140, 126, 0.42);
+  transform: translateY(-4px) scale(1.04);
+}
+
+.whatsappFloat:active {
+  transform: translateY(-1px) scale(0.96);
+}
+
 @keyframes modalIn {
   from {
     opacity: 0;
@@ -2443,6 +2528,35 @@ footer p {
   max-width: 310px;
   color: #a8b9d3;
   font-size: 14px;
+}
+
+.footerSocials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+footer .footerSocials a {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin: 0;
+  color: #d7e4f7;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+footer .footerSocials a:hover {
+  color: #062018;
+  background: #34dc82;
+  transform: translateY(-2px);
 }
 
 .footerBottom {
@@ -2633,7 +2747,11 @@ footer p {
   }
 
   .testimonials {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
+  }
+
+  .reviewIntro {
+    position: static;
   }
 
   .statsBand,
@@ -2734,7 +2852,8 @@ footer p {
   .packageGrid,
   .statsBand,
   .processGrid,
-  .testimonials,
+  .reviewForm,
+  .reviewList,
   .industries div,
   footer {
     grid-template-columns: 1fr;
@@ -2756,6 +2875,17 @@ footer p {
     background: linear-gradient(135deg, #8ff3b9, #34dc82);
     border-radius: 8px;
     box-shadow: 0 18px 38px rgba(6, 20, 39, 0.25);
+  }
+
+  .whatsappFloat {
+    right: 18px;
+    bottom: 78px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .testimonials {
+    padding: 52px 14px;
   }
 
   .serviceModal {
