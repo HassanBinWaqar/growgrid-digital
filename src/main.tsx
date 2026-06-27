@@ -50,6 +50,7 @@ type Review = {
   email: string;
   role: string;
   result: string;
+  rating: number;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
 };
@@ -419,6 +420,7 @@ const initialReviews: Review[] = [
     email: "john@carterlogistics.com",
     role: "CEO, Carter Logistics",
     result: "+64% qualified leads",
+    rating: 5,
     status: "approved",
     createdAt: "2026-06-20T10:00:00.000Z",
   },
@@ -429,6 +431,7 @@ const initialReviews: Review[] = [
     email: "sarah@brighthomes.com",
     role: "Marketing Director, Bright Homes",
     result: "2.4x marketing ROI",
+    rating: 5,
     status: "approved",
     createdAt: "2026-06-21T10:00:00.000Z",
   },
@@ -439,6 +442,7 @@ const initialReviews: Review[] = [
     email: "mia@northlinestudio.com",
     role: "Founder, Northline Studio",
     result: "-31% cost per lead",
+    rating: 5,
     status: "approved",
     createdAt: "2026-06-22T10:00:00.000Z",
   },
@@ -476,6 +480,7 @@ function App() {
     email: "",
     role: "",
     quote: "",
+    rating: 5,
   });
 
   useEffect(() => {
@@ -486,7 +491,20 @@ function App() {
     }
 
     try {
-      setReviews(JSON.parse(savedReviews) as Review[]);
+      const parsedReviews = JSON.parse(savedReviews) as Partial<Review>[];
+      setReviews(
+        parsedReviews.map((review) => ({
+          id: review.id ?? Date.now(),
+          name: review.name ?? "Client",
+          email: review.email ?? "",
+          role: review.role ?? "Client",
+          quote: review.quote ?? "",
+          result: review.result ?? "Verified client review",
+          rating: review.rating ?? 5,
+          status: review.status ?? "pending",
+          createdAt: review.createdAt ?? new Date().toISOString(),
+        })),
+      );
     } catch {
       window.localStorage.removeItem(reviewStorageKey);
     }
@@ -595,12 +613,13 @@ function App() {
       role,
       quote,
       result: "Awaiting approval",
+      rating: reviewForm.rating,
       status: "pending",
       createdAt: new Date().toISOString(),
     };
 
     setReviews((currentReviews) => [nextReview, ...currentReviews]);
-    setReviewForm({ name: "", email: "", role: "", quote: "" });
+    setReviewForm({ name: "", email: "", role: "", quote: "", rating: 5 });
     setIsReviewPopupOpen(true);
   };
 
@@ -1013,6 +1032,25 @@ function App() {
               onChange={(event) => setReviewForm((form) => ({ ...form, quote: event.target.value }))}
             />
           </label>
+          <div className="ratingField reviewFull">
+            <span>Your rating</span>
+            <div className="ratingButtons" role="radiogroup" aria-label="Choose review rating">
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <button
+                  key={rating}
+                  type="button"
+                  className={rating <= reviewForm.rating ? "isSelected" : ""}
+                  role="radio"
+                  aria-checked={rating === reviewForm.rating}
+                  aria-label={`${rating} star${rating === 1 ? "" : "s"}`}
+                  onClick={() => setReviewForm((form) => ({ ...form, rating }))}
+                >
+                  <Star size={24} fill="currentColor" />
+                </button>
+              ))}
+            </div>
+            <small>{reviewForm.rating} out of 5 stars</small>
+          </div>
           <button className="primaryBtn reviewFull" type="submit">
             Submit Review <ArrowRight size={18} />
           </button>
@@ -1037,6 +1075,11 @@ function App() {
                     <span>{review.status}</span>
                     <strong>{review.name}</strong>
                     <small>{review.role}</small>
+                    <div className="ownerRating" aria-label={`${review.rating} out of 5 stars`}>
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <Star key={index} size={14} fill="currentColor" className={index < review.rating ? "isFilled" : ""} />
+                      ))}
+                    </div>
                     <p>{review.quote}</p>
                   </div>
                   <div className="ownerActions">
@@ -1079,7 +1122,7 @@ function App() {
                 <div>
                   <div className="stars">
                     {Array.from({ length: 5 }).map((_, index) => (
-                      <Star key={index} size={16} fill="currentColor" />
+                      <Star key={index} size={16} fill="currentColor" className={index < testimonial.rating ? "isFilled" : ""} />
                     ))}
                   </div>
                   <strong>{testimonial.result}</strong>
