@@ -465,6 +465,11 @@ const navItems = [
 
 const reviewStorageKey = "growgrid-reviews";
 const ownerAccessCodeHash = "47fade82a2854133392612ba16f0d6b39d09c5ec350bc63af62b39dc61168167";
+const whatsappNumber = "923155704518";
+
+function createWhatsappLink(message: string) {
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+}
 
 async function sha256(value: string) {
   const data = new TextEncoder().encode(value);
@@ -493,6 +498,15 @@ function App() {
     role: "",
     quote: "",
     rating: 5,
+  });
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    email: "",
+    website: "",
+    budget: "",
+    service: "",
+    timeline: "",
+    message: "",
   });
 
   useEffect(() => {
@@ -689,6 +703,53 @@ function App() {
 
   const deleteReview = (id: number) => {
     setReviews((currentReviews) => currentReviews.filter((review) => review.id !== id));
+  };
+
+  const openWhatsappMessage = (message: string) => {
+    window.open(createWhatsappLink(message), "_blank", "noopener,noreferrer");
+  };
+
+  const handleAuditRequest = () => {
+    openWhatsappMessage(
+      [
+        "GrowGrid Digital - Free Growth Audit Request",
+        "",
+        "Hello GrowGrid Digital team,",
+        "I want to request a free 7-point marketing audit.",
+        "",
+        "Audit deliverables requested:",
+        "- Scorecard",
+        "- Priority fixes",
+        "- Channel roadmap",
+        "- 30-day action plan",
+        "",
+        "Please guide me on the next step.",
+      ].join("\n"),
+    );
+  };
+
+  const handleLeadSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    openWhatsappMessage(
+      [
+        "GrowGrid Digital - New Growth Strategy Request",
+        "",
+        `Name: ${leadForm.name || "Not provided"}`,
+        `Email: ${leadForm.email || "Not provided"}`,
+        `Website: ${leadForm.website || "Not provided"}`,
+        `Monthly ad budget: ${leadForm.budget || "Not selected"}`,
+        `Main service needed: ${leadForm.service || "Not selected"}`,
+        `Timeline: ${leadForm.timeline || "Not selected"}`,
+        "",
+        "What I want to improve:",
+        leadForm.message || "Not provided",
+        "",
+        "Please review my details and share the best next step.",
+      ].join("\n"),
+    );
+
+    setIsLeadSubmitted(true);
   };
 
   const approvedReviews = reviews.filter((review) => review.status === "approved");
@@ -1259,9 +1320,9 @@ function App() {
           <span>Priority fixes</span>
           <span>Channel roadmap</span>
           <span>30-day action plan</span>
-          <a className="primaryBtn" href="#contact">
+          <button className="primaryBtn" type="button" onClick={handleAuditRequest}>
             Request Free Audit <ArrowRight size={18} />
-          </a>
+          </button>
         </div>
       </section>
 
@@ -1321,10 +1382,7 @@ function App() {
         </div>
         <form
           className={`leadForm ${isLeadSubmitted ? "isSubmitted" : ""}`}
-          onSubmit={(event) => {
-            event.preventDefault();
-            setIsLeadSubmitted(true);
-          }}
+          onSubmit={handleLeadSubmit}
         >
           {isLeadSubmitted ? (
             <div className="formSuccess formFull" role="status">
@@ -1337,19 +1395,44 @@ function App() {
           ) : null}
           <label>
             Name
-            <input type="text" name="name" placeholder="Your name" />
+            <input
+              type="text"
+              name="name"
+              required
+              value={leadForm.name}
+              placeholder="Your name"
+              onChange={(event) => setLeadForm((form) => ({ ...form, name: event.target.value }))}
+            />
           </label>
           <label>
             Email
-            <input type="email" name="email" placeholder="you@company.com" />
+            <input
+              type="email"
+              name="email"
+              required
+              value={leadForm.email}
+              placeholder="you@company.com"
+              onChange={(event) => setLeadForm((form) => ({ ...form, email: event.target.value }))}
+            />
           </label>
           <label>
             Website
-            <input type="url" name="website" placeholder="https://yourwebsite.com" />
+            <input
+              type="url"
+              name="website"
+              value={leadForm.website}
+              placeholder="https://yourwebsite.com"
+              onChange={(event) => setLeadForm((form) => ({ ...form, website: event.target.value }))}
+            />
           </label>
           <label>
             Monthly ad budget
-            <select name="budget" defaultValue="">
+            <select
+              name="budget"
+              required
+              value={leadForm.budget}
+              onChange={(event) => setLeadForm((form) => ({ ...form, budget: event.target.value }))}
+            >
               <option value="" disabled>Select range</option>
               <option>$0 - $2,500</option>
               <option>$2,500 - $10,000</option>
@@ -1358,7 +1441,12 @@ function App() {
           </label>
           <label>
             Main service needed
-            <select name="service" defaultValue="">
+            <select
+              name="service"
+              required
+              value={leadForm.service}
+              onChange={(event) => setLeadForm((form) => ({ ...form, service: event.target.value }))}
+            >
               <option value="" disabled>Select service</option>
               {services.slice(0, 8).map((service) => (
                 <option key={service.title}>{service.title}</option>
@@ -1367,7 +1455,12 @@ function App() {
           </label>
           <label>
             Timeline
-            <select name="timeline" defaultValue="">
+            <select
+              name="timeline"
+              required
+              value={leadForm.timeline}
+              onChange={(event) => setLeadForm((form) => ({ ...form, timeline: event.target.value }))}
+            >
               <option value="" disabled>When do you want to start?</option>
               <option>Immediately</option>
               <option>Next 30 days</option>
@@ -1376,7 +1469,13 @@ function App() {
           </label>
           <label className="formFull">
             What do you want to improve?
-            <textarea name="message" placeholder="Leads, revenue, traffic, tracking, conversion rate..." />
+            <textarea
+              name="message"
+              required
+              value={leadForm.message}
+              placeholder="Leads, revenue, traffic, tracking, conversion rate..."
+              onChange={(event) => setLeadForm((form) => ({ ...form, message: event.target.value }))}
+            />
           </label>
           <button className="primaryBtn formFull" type="submit">
             Send Growth Request <ArrowRight size={18} />
