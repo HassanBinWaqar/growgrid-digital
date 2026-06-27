@@ -41,9 +41,9 @@ button {
   padding: clamp(18px, 4vw, 48px);
   color: #fff;
   background:
-    radial-gradient(circle at 24% 18%, rgba(55, 223, 128, 0.18), transparent 24rem),
-    radial-gradient(circle at 78% 70%, rgba(39, 128, 224, 0.2), transparent 25rem),
-    linear-gradient(135deg, #06142d 0%, #0a1d3e 58%, #07152e 100%);
+    radial-gradient(circle at 18% 20%, rgba(43, 128, 223, 0.16), transparent 24rem),
+    radial-gradient(circle at 82% 72%, rgba(55, 223, 128, 0.12), transparent 24rem),
+    linear-gradient(135deg, #07142b 0%, #0b1d38 54%, #071427 100%);
   opacity: 1;
   visibility: visible;
   transition:
@@ -72,23 +72,23 @@ button {
   aspect-ratio: 1;
   border-radius: 50%;
   background:
-    conic-gradient(from 180deg, rgba(55, 223, 128, 0.18), rgba(52, 126, 227, 0.28), rgba(55, 223, 128, 0.18));
-  filter: blur(42px);
-  opacity: 0.55;
+    radial-gradient(circle, rgba(55, 223, 128, 0.16), rgba(43, 128, 223, 0.1), transparent 68%);
+  filter: blur(54px);
+  opacity: 0.62;
 }
 
 .splashShell {
   position: relative;
   display: grid;
-  width: min(100%, 820px);
-  grid-template-columns: minmax(280px, 0.95fr) minmax(280px, 1.05fr);
+  width: min(100%, 780px);
+  grid-template-columns: minmax(280px, 0.98fr) minmax(260px, 1.02fr);
   align-items: stretch;
   overflow: hidden;
-  background: rgba(7, 22, 48, 0.76);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(7, 22, 48, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 8px;
-  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(18px);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(20px);
   animation: splashCardIn 720ms ease both;
 }
 
@@ -97,12 +97,10 @@ button {
   display: grid;
   align-content: center;
   justify-items: start;
-  min-height: 360px;
-  padding: clamp(26px, 4.4vw, 42px);
+  min-height: 340px;
+  padding: clamp(28px, 4.4vw, 42px);
   text-align: left;
-  background:
-    radial-gradient(circle at 24% 24%, rgba(55, 223, 128, 0.14), transparent 17rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent);
 }
 
 .splashBrandPanel::after {
@@ -119,9 +117,9 @@ button {
   position: relative;
   display: grid;
   place-items: center;
-  width: 94px;
-  height: 94px;
-  margin-bottom: 22px;
+  width: 86px;
+  height: 86px;
+  margin-bottom: 24px;
 }
 
 .splashLogoWrap::before {
@@ -129,13 +127,13 @@ button {
   inset: 0;
   content: "";
   border-radius: 50%;
-  background: conic-gradient(from 0deg, #37df80, #237bd8, #ffd166, #37df80);
-  animation: splashSpin 2.8s linear infinite;
+  background: linear-gradient(135deg, #37df80, #237bd8);
+  box-shadow: 0 14px 34px rgba(35, 123, 216, 0.18);
 }
 
 .splashLogoWrap::after {
   position: absolute;
-  inset: 7px;
+  inset: 6px;
   content: "";
   border-radius: 50%;
   background: #fff;
@@ -144,8 +142,8 @@ button {
 .splashLogoWrap img {
   position: relative;
   z-index: 1;
-  width: 72px;
-  height: 72px;
+  width: 66px;
+  height: 66px;
   object-fit: cover;
   object-position: center 30%;
   border-radius: 50%;
@@ -155,10 +153,10 @@ button {
 .splashLogoWrap span {
   position: absolute;
   z-index: 2;
-  right: 8px;
-  bottom: 9px;
-  width: 14px;
-  height: 14px;
+  right: 7px;
+  bottom: 8px;
+  width: 12px;
+  height: 12px;
   border: 3px solid #071630;
   border-radius: 50%;
   background: #37df80;
@@ -167,7 +165,7 @@ button {
 
 .splashEyebrow {
   margin: 0 0 8px;
-  color: #37df80;
+  color: #8ff3b9;
   font-size: 12px;
   font-weight: 950;
   letter-spacing: 0.12em;
@@ -177,7 +175,7 @@ button {
 .splashBrandPanel h1 {
   margin: 0;
   color: #fff;
-  font-size: clamp(31px, 4.2vw, 44px);
+  font-size: clamp(32px, 4vw, 42px);
   line-height: 1.05;
 }
 
@@ -192,7 +190,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: min(100%, 310px);
+  width: min(100%, 300px);
   margin-bottom: 9px;
   gap: 16px;
 }
@@ -212,9 +210,9 @@ button {
 
 .splashLoader {
   overflow: hidden;
-  width: min(100%, 310px);
-  height: 8px;
-  background: rgba(255, 255, 255, 0.12);
+  width: min(100%, 300px);
+  height: 7px;
+  background: rgba(255, 255, 255, 0.11);
   border-radius: 999px;
 }
 
@@ -224,7 +222,7 @@ button {
   height: 100%;
   border-radius: inherit;
   background:
-    linear-gradient(90deg, #37df80, #2b80df 72%, #7fe7ff),
+    linear-gradient(90deg, #8ff3b9, #37df80 65%, #67d9ff),
     #37df80;
   box-shadow: 0 0 18px rgba(55, 223, 128, 0.44);
   transition: width 120ms ease-out;
@@ -234,16 +232,16 @@ button {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 7px;
-  margin-top: 16px;
+  gap: 8px;
+  margin-top: 18px;
 }
 
 .splashStages small {
-  padding: 6px 9px;
+  padding: 7px 10px;
   color: rgba(255, 255, 255, 0.76);
   font-size: 11px;
   font-weight: 900;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.065);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
 }
@@ -256,126 +254,103 @@ button {
 }
 
 .splashStages small.isComplete {
-  color: #06142d;
-  background: #37df80;
-  border-color: rgba(55, 223, 128, 0.88);
+  color: #dffdec;
+  background: rgba(55, 223, 128, 0.13);
+  border-color: rgba(143, 243, 185, 0.28);
 }
 
 .splashDashboard {
   position: relative;
   display: grid;
   align-content: center;
-  gap: 14px;
-  min-height: 360px;
-  padding: clamp(22px, 3.6vw, 36px);
+  gap: 16px;
+  min-height: 340px;
+  padding: clamp(24px, 3.8vw, 38px);
 }
 
 .splashDashboard::before {
   position: absolute;
-  inset: 24px;
+  inset: 26px;
   content: "";
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.075);
   border-radius: 8px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 34px 34px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 42px 42px;
   pointer-events: none;
 }
 
-.splashDashTop,
-.splashChart,
-.splashMetrics {
+.splashStatusCard,
+.splashStatusList {
   position: relative;
 }
 
-.splashDashTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 13px 15px;
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 12px;
-  font-weight: 900;
-  background: rgba(255, 255, 255, 0.075);
+.splashStatusCard {
+  display: grid;
+  gap: 8px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
 }
 
-.splashDashTop strong {
-  color: #37df80;
-  font-size: 22px;
+.splashStatusCard span {
+  color: #8ff3b9;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.splashChart {
-  height: 132px;
-  overflow: hidden;
-  padding: 18px;
-  background: rgba(4, 17, 39, 0.66);
+.splashStatusCard strong {
+  display: block;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 950;
+}
+
+.splashStatusCard p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.splashStatusList {
+  display: grid;
+  gap: 10px;
+}
+
+.splashStatusList span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 14px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 850;
+  background: rgba(4, 17, 39, 0.42);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
 }
 
-.splashChart svg {
-  position: absolute;
-  right: 18px;
-  bottom: 24px;
-  left: 18px;
-  width: calc(100% - 36px);
-  height: 92px;
-  overflow: visible;
+.splashStatusList i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
 }
 
-.splashChart path {
-  fill: none;
-  stroke: #7fe7ff;
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-dasharray: 320;
-  stroke-dashoffset: 320;
-  filter: drop-shadow(0 0 8px rgba(127, 231, 255, 0.8));
-  animation: splashDraw 2.8s ease forwards infinite;
+.splashStatusList span.isComplete {
+  color: #e9fbf1;
+  border-color: rgba(143, 243, 185, 0.22);
 }
 
-.splashMetrics {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.splashMetrics span {
-  min-height: 72px;
-  padding: 14px;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 12px;
-  font-weight: 800;
-  background: rgba(255, 255, 255, 0.075);
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 8px;
-}
-
-.splashMetrics strong {
-  display: block;
-  margin-bottom: 4px;
-  color: #fff;
-  font-size: 22px;
-  font-weight: 950;
-}
-
-@keyframes splashSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes splashDraw {
-  0% {
-    stroke-dashoffset: 320;
-  }
-
-  58%,
-  100% {
-    stroke-dashoffset: 0;
-  }
+.splashStatusList span.isComplete i {
+  background: #37df80;
+  box-shadow: 0 0 14px rgba(55, 223, 128, 0.64);
 }
 
 @keyframes splashCardIn {
@@ -392,8 +367,6 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
   .splashGlow,
-  .splashLogoWrap::before,
-  .splashChart path,
   .splashShell {
     animation: none;
   }
@@ -457,16 +430,12 @@ button {
     inset: 16px;
   }
 
-  .splashChart {
-    height: 96px;
+  .splashStatusCard {
+    padding: 18px;
   }
 
-  .splashMetrics {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .splashMetrics span {
-    min-height: auto;
+  .splashStatusList span {
+    min-height: 42px;
   }
 }
 

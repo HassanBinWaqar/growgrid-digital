@@ -98,41 +98,39 @@ function SplashScreen() {
             <img src="/growgrid-logo.jpeg" alt="" />
             <span />
           </div>
-          <p className="splashEyebrow">Launching Growth Engine</p>
+          <p className="splashEyebrow">Preparing Workspace</p>
           <h1>GrowGrid Digital</h1>
           <p>Your Growth. Our Grid.</p>
           <div className="splashProgressMeta">
-            <span>Building campaign workspace</span>
+            <span>Loading client experience</span>
             <strong>{progress}%</strong>
           </div>
           <div className="splashLoader" role="progressbar" aria-label="Loading GrowGrid Digital website" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
             <span style={{ width: `${progress}%` }} />
           </div>
           <div className="splashStages">
-            <small className={progress >= 34 ? "isComplete" : ""}>Strategy loaded</small>
-            <small className={progress >= 68 ? "isComplete" : ""}>Campaigns synced</small>
+            <small className={progress >= 34 ? "isComplete" : ""}>Brand assets ready</small>
+            <small className={progress >= 68 ? "isComplete" : ""}>Growth system online</small>
           </div>
         </div>
 
         <div className="splashDashboard" aria-hidden="true">
-          <div className="splashDashTop">
-            <span>Campaign workspace</span>
-            <strong>+42%</strong>
+          <div className="splashStatusCard">
+            <span>Launch Status</span>
+            <strong>Almost ready</strong>
+            <p>Setting up the digital growth environment.</p>
           </div>
-          <div className="splashChart">
-            <svg viewBox="0 0 220 92" role="img" aria-hidden="true">
-              <path d="M8 78 C36 58 42 64 63 42 S101 51 122 29 158 39 180 17 202 21 214 9" />
-            </svg>
-          </div>
-          <div className="splashMetrics">
-            <span>
-              <strong>3.6x</strong>
-              Growth
-            </span>
-            <span>
-              <strong>8.6k</strong>
-              Leads
-            </span>
+          <div className="splashStatusList">
+            {([
+              ["Strategy layer", progress >= 28],
+              ["Performance tracking", progress >= 58],
+              ["Client interface", progress >= 88],
+            ] as const).map(([label, isComplete]) => (
+              <span className={isComplete ? "isComplete" : ""} key={label}>
+                <i />
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </div>
