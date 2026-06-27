@@ -35,7 +35,6 @@ import {
   Star,
   Target,
   TrendingUp,
-  Twitter,
   UsersRound,
   Video,
   X,
@@ -446,10 +445,9 @@ const initialReviews: Review[] = [
 ];
 
 const socialLinks = [
-  ["LinkedIn", "https://www.linkedin.com/", Linkedin],
-  ["Twitter", "https://twitter.com/", Twitter],
-  ["Facebook", "https://www.facebook.com/", Facebook],
-  ["Instagram", "https://www.instagram.com/", Instagram],
+  ["LinkedIn", "https://www.linkedin.com/company/growgriddigital/", Linkedin],
+  ["Facebook", "https://www.facebook.com/profile.php?id=61591550873984", Facebook],
+  ["Instagram", "https://www.instagram.com/growgriddigital?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==", Instagram],
 ] as const;
 
 const navItems = [
@@ -1138,8 +1136,8 @@ function App() {
           <h2>Ready to find your next growth lever?</h2>
           <p>Tell us where you are today. We'll respond with the cleanest next step for your traffic, funnel, and revenue goals.</p>
           <div className="contactMethods">
-            <a href="tel:+15551234567">+1 (555) 123-4567</a>
-            <a href="mailto:hello@growgriddigital.com">hello@growgriddigital.com</a>
+            <a href="tel:+923155704518">+92 315 5704518</a>
+            <a href="mailto:info.GrowGridDigital@gmail.com">info.GrowGridDigital@gmail.com</a>
             <span>Response within 1 business day</span>
           </div>
         </div>
@@ -1246,8 +1244,8 @@ function App() {
         </div>
         <div>
           <h3>Contact Us</h3>
-          <a href="tel:+15551234567">+1 (555) 123-4567</a>
-          <a href="mailto:hello@growgriddigital.com">hello@growgriddigital.com</a>
+          <a href="tel:+923155704518">+92 315 5704518</a>
+          <a href="mailto:info.GrowGridDigital@gmail.com">info.GrowGridDigital@gmail.com</a>
           <p>123 Market St, Suite 100, San Francisco, CA</p>
         </div>
         <div className="footerBottom">
@@ -1260,7 +1258,7 @@ function App() {
       </a>
       <a
         className="whatsappFloat"
-        href="https://wa.me/15551234567?text=Hi%20GrowGrid%20Digital%2C%20I%20want%20to%20discuss%20digital%20marketing%20services."
+        href="https://wa.me/923155704518?text=Hi%20GrowGrid%20Digital%2C%20I%20want%20to%20discuss%20digital%20marketing%20services."
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with GrowGrid Digital on WhatsApp"
