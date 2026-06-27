@@ -51,6 +51,8 @@ type Review = {
   role: string;
   result: string;
   avatar: string;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
 };
 
 function SplashScreen() {
@@ -418,6 +420,8 @@ const initialReviews: Review[] = [
     role: "CEO, Carter Logistics",
     result: "+64% qualified leads",
     avatar: "/client-avatar-1.jpg",
+    status: "approved",
+    createdAt: "2026-06-20T10:00:00.000Z",
   },
   {
     id: 2,
@@ -426,6 +430,8 @@ const initialReviews: Review[] = [
     role: "Marketing Director, Bright Homes",
     result: "2.4x marketing ROI",
     avatar: "/client-avatar-2.jpg",
+    status: "approved",
+    createdAt: "2026-06-21T10:00:00.000Z",
   },
   {
     id: 3,
@@ -434,6 +440,8 @@ const initialReviews: Review[] = [
     role: "Founder, Northline Studio",
     result: "-31% cost per lead",
     avatar: "/client-avatar-3.jpg",
+    status: "approved",
+    createdAt: "2026-06-22T10:00:00.000Z",
   },
 ];
 
@@ -453,16 +461,40 @@ const navItems = [
   ["Contact", "#contact"],
 ] as const;
 
+const reviewStorageKey = "growgrid-reviews";
+const ownerAccessCode = "growgrid-owner";
+
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<(typeof services)[number] | null>(null);
   const [isLeadSubmitted, setIsLeadSubmitted] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [reviewNotice, setReviewNotice] = useState("");
+  const [isOwnerMode, setIsOwnerMode] = useState(false);
+  const [ownerCode, setOwnerCode] = useState("");
   const [reviewForm, setReviewForm] = useState({
     name: "",
     role: "",
     quote: "",
   });
+
+  useEffect(() => {
+    const savedReviews = window.localStorage.getItem(reviewStorageKey);
+
+    if (!savedReviews) {
+      return;
+    }
+
+    try {
+      setReviews(JSON.parse(savedReviews) as Review[]);
+    } catch {
+      window.localStorage.removeItem(reviewStorageKey);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(reviewStorageKey, JSON.stringify(reviews));
+  }, [reviews]);
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -529,13 +561,46 @@ function App() {
       name,
       role,
       quote,
-      result: "New client review",
+      result: "Awaiting approval",
       avatar: `/client-avatar-${avatarIndex}.jpg`,
+      status: "pending",
+      createdAt: new Date().toISOString(),
     };
 
     setReviews((currentReviews) => [nextReview, ...currentReviews]);
     setReviewForm({ name: "", role: "", quote: "" });
+    setReviewNotice("Thanks. Your review was submitted and is waiting for owner approval.");
   };
+
+  const handleOwnerLogin = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (ownerCode.trim() === ownerAccessCode) {
+      setIsOwnerMode(true);
+      setOwnerCode("");
+    }
+  };
+
+  const updateReviewStatus = (id: number, status: Review["status"]) => {
+    setReviews((currentReviews) =>
+      currentReviews.map((review) =>
+        review.id === id
+          ? {
+              ...review,
+              status,
+              result: status === "approved" ? "Verified client review" : status === "rejected" ? "Rejected by owner" : "Awaiting approval",
+            }
+          : review,
+      ),
+    );
+  };
+
+  const deleteReview = (id: number) => {
+    setReviews((currentReviews) => currentReviews.filter((review) => review.id !== id));
+  };
+
+  const approvedReviews = reviews.filter((review) => review.status === "approved");
+  const pendingReviewsCount = reviews.filter((review) => review.status === "pending").length;
 
   return (
     <>
@@ -873,8 +938,8 @@ function App() {
       <section className="testimonials" aria-label="Client testimonials">
         <div className="reviewIntro">
           <p className="eyebrow">Client Reviews</p>
-          <h2>Real feedback, updated instantly.</h2>
-          <p>Clients can submit a review and see it appear at the top of the list immediately.</p>
+          <h2>Real feedback, reviewed before publishing.</h2>
+          <p>Clients can submit their name, designation, and review. The website owner can approve, reject, or delete each review.</p>
         </div>
         <form className="reviewForm" onSubmit={handleReviewSubmit}>
           <label>
@@ -904,11 +969,67 @@ function App() {
             />
           </label>
           <button className="primaryBtn reviewFull" type="submit">
-            Add Review <ArrowRight size={18} />
+            Submit Review <ArrowRight size={18} />
           </button>
+          {reviewNotice ? <p className="reviewNotice reviewFull">{reviewNotice}</p> : null}
         </form>
+        <div className="ownerReviewPanel">
+          <div className="ownerPanelHeader">
+            <div>
+              <span>Owner controls</span>
+              <strong>{pendingReviewsCount} pending review{pendingReviewsCount === 1 ? "" : "s"}</strong>
+            </div>
+            {isOwnerMode ? (
+              <button type="button" onClick={() => setIsOwnerMode(false)}>
+                Lock panel
+              </button>
+            ) : null}
+          </div>
+          {isOwnerMode ? (
+            <div className="ownerReviewList">
+              {reviews.map((review) => (
+                <article className={`ownerReviewItem ${review.status}`} key={review.id}>
+                  <div>
+                    <span>{review.status}</span>
+                    <strong>{review.name}</strong>
+                    <small>{review.role}</small>
+                    <p>{review.quote}</p>
+                  </div>
+                  <div className="ownerActions">
+                    <button type="button" onClick={() => updateReviewStatus(review.id, "approved")}>
+                      Approve
+                    </button>
+                    <button type="button" onClick={() => updateReviewStatus(review.id, "rejected")}>
+                      Reject
+                    </button>
+                    <button type="button" onClick={() => deleteReview(review.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <form className="ownerLogin" onSubmit={handleOwnerLogin}>
+              <label>
+                Owner access code
+                <input
+                  type="password"
+                  value={ownerCode}
+                  placeholder="Enter owner code"
+                  onChange={(event) => setOwnerCode(event.target.value)}
+                />
+              </label>
+              <button type="submit">Unlock reviews</button>
+              <small>Demo code: growgrid-owner</small>
+            </form>
+          )}
+        </div>
         <div className="reviewList">
-          {reviews.map((testimonial) => (
+          {approvedReviews.length === 0 ? (
+            <p className="emptyReviews">No approved reviews yet.</p>
+          ) : null}
+          {approvedReviews.map((testimonial) => (
             <blockquote key={testimonial.id}>
               <div className="testimonialTop">
                 <img src={testimonial.avatar} alt={`${testimonial.name} client portrait`} loading="lazy" />
