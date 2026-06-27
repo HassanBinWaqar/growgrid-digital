@@ -464,10 +464,19 @@ const navItems = [
 ] as const;
 
 const reviewStorageKey = "growgrid-reviews";
-const ownerAccessCode = "growgrid-owner";
+const ownerAccessCodeHash = "47fade82a2854133392612ba16f0d6b39d09c5ec350bc63af62b39dc61168167";
+
+async function sha256(value: string) {
+  const data = new TextEncoder().encode(value);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDashboardView, setIsDashboardView] = useState(() => window.location.hash === "#review-dashboard");
   const [selectedService, setSelectedService] = useState<(typeof services)[number] | null>(null);
   const [isLeadSubmitted, setIsLeadSubmitted] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
@@ -475,6 +484,9 @@ function App() {
   const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
   const [isOwnerMode, setIsOwnerMode] = useState(false);
   const [ownerCode, setOwnerCode] = useState("");
+  const [ownerError, setOwnerError] = useState("");
+  const [failedOwnerAttempts, setFailedOwnerAttempts] = useState(0);
+  const [ownerLockedUntil, setOwnerLockedUntil] = useState(0);
   const [reviewForm, setReviewForm] = useState({
     name: "",
     email: "",
@@ -482,6 +494,13 @@ function App() {
     quote: "",
     rating: 5,
   });
+
+  useEffect(() => {
+    const handleHashChange = () => setIsDashboardView(window.location.hash === "#review-dashboard");
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   useEffect(() => {
     const savedReviews = window.localStorage.getItem(reviewStorageKey);
@@ -623,12 +642,34 @@ function App() {
     setIsReviewPopupOpen(true);
   };
 
-  const handleOwnerLogin = (event: FormEvent<HTMLFormElement>) => {
+  const handleOwnerLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (ownerCode.trim() === ownerAccessCode) {
+    if (Date.now() < ownerLockedUntil) {
+      setOwnerError("Too many failed attempts. Please wait before trying again.");
+      return;
+    }
+
+    const enteredCodeHash = await sha256(ownerCode.trim());
+
+    if (enteredCodeHash === ownerAccessCodeHash) {
       setIsOwnerMode(true);
       setOwnerCode("");
+      setOwnerError("");
+      setFailedOwnerAttempts(0);
+      return;
+    }
+
+    const nextFailedAttempts = failedOwnerAttempts + 1;
+    setFailedOwnerAttempts(nextFailedAttempts);
+    setOwnerCode("");
+
+    if (nextFailedAttempts >= 5) {
+      setOwnerLockedUntil(Date.now() + 60_000);
+      setOwnerError("Access temporarily locked after repeated failed attempts.");
+      setFailedOwnerAttempts(0);
+    } else {
+      setOwnerError("Invalid access code.");
     }
   };
 
@@ -652,6 +693,112 @@ function App() {
 
   const approvedReviews = reviews.filter((review) => review.status === "approved");
   const pendingReviewsCount = reviews.filter((review) => review.status === "pending").length;
+  const rejectedReviewsCount = reviews.filter((review) => review.status === "rejected").length;
+
+  if (isDashboardView) {
+    return (
+      <main className="dashboardShell">
+        <section className="dashboardHero">
+          <a className="brand" href="#home" aria-label="Back to GrowGrid Digital website">
+            <img className="brandLogo" src="/growgrid-logo.jpeg" alt="" />
+            <span>
+              <strong>GrowGrid Digital</strong>
+              <small>Review moderation dashboard</small>
+            </span>
+          </a>
+          <a className="dashboardBack" href="#home">
+            Back to website <ArrowRight size={16} />
+          </a>
+        </section>
+
+        {!isOwnerMode ? (
+          <section className="dashboardLoginCard" aria-label="Owner dashboard login">
+            <ShieldCheck size={38} />
+            <p className="eyebrow">Protected Area</p>
+            <h1>Owner Review Dashboard</h1>
+            <p>Moderation tools are separated from the public website. Enter the owner access code to approve, reject, or delete customer reviews.</p>
+            <form className="ownerLogin dashboardLogin" onSubmit={handleOwnerLogin}>
+              <label>
+                Owner access code
+                <input
+                  type="password"
+                  value={ownerCode}
+                  placeholder="Enter access code"
+                  autoComplete="current-password"
+                  onChange={(event) => {
+                    setOwnerCode(event.target.value);
+                    setOwnerError("");
+                  }}
+                />
+              </label>
+              {ownerError ? <span className="ownerError">{ownerError}</span> : null}
+              <button type="submit" disabled={Date.now() < ownerLockedUntil}>
+                Unlock Dashboard
+              </button>
+            </form>
+          </section>
+        ) : (
+          <section className="dashboardPanel" aria-label="Review moderation dashboard">
+            <div className="dashboardPanelHeader">
+              <div>
+                <p className="eyebrow">Moderation Queue</p>
+                <h1>Review Dashboard</h1>
+                <p>Emails are stored for owner reference only and are not displayed publicly.</p>
+              </div>
+              <button type="button" onClick={() => setIsOwnerMode(false)}>
+                Lock dashboard
+              </button>
+            </div>
+
+            <div className="dashboardStats" aria-label="Review moderation statistics">
+              <span>
+                <strong>{pendingReviewsCount}</strong>
+                Pending
+              </span>
+              <span>
+                <strong>{approvedReviews.length}</strong>
+                Approved
+              </span>
+              <span>
+                <strong>{rejectedReviewsCount}</strong>
+                Rejected
+              </span>
+            </div>
+
+            <div className="dashboardReviewList">
+              {reviews.map((review) => (
+                <article className={`ownerReviewItem ${review.status}`} key={review.id}>
+                  <div>
+                    <span>{review.status}</span>
+                    <strong>{review.name}</strong>
+                    <small>{review.role}</small>
+                    <small>{review.email}</small>
+                    <div className="ownerRating" aria-label={`${review.rating} out of 5 stars`}>
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <Star key={index} size={14} fill="currentColor" className={index < review.rating ? "isFilled" : ""} />
+                      ))}
+                    </div>
+                    <p>{review.quote}</p>
+                  </div>
+                  <div className="ownerActions">
+                    <button type="button" onClick={() => updateReviewStatus(review.id, "approved")}>
+                      Approve
+                    </button>
+                    <button type="button" onClick={() => updateReviewStatus(review.id, "rejected")}>
+                      Reject
+                    </button>
+                    <button type="button" onClick={() => deleteReview(review.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+    );
+  }
 
   return (
     <>
@@ -1055,63 +1202,6 @@ function App() {
             Submit Review <ArrowRight size={18} />
           </button>
         </form>
-        <div className="ownerReviewPanel">
-          <div className="ownerPanelHeader">
-            <div>
-              <span>Owner controls</span>
-              <strong>{pendingReviewsCount} pending review{pendingReviewsCount === 1 ? "" : "s"}</strong>
-            </div>
-            {isOwnerMode ? (
-              <button type="button" onClick={() => setIsOwnerMode(false)}>
-                Lock panel
-              </button>
-            ) : null}
-          </div>
-          {isOwnerMode ? (
-            <div className="ownerReviewList">
-              {reviews.map((review) => (
-                <article className={`ownerReviewItem ${review.status}`} key={review.id}>
-                  <div>
-                    <span>{review.status}</span>
-                    <strong>{review.name}</strong>
-                    <small>{review.role}</small>
-                    <div className="ownerRating" aria-label={`${review.rating} out of 5 stars`}>
-                      {Array.from({ length: 5 }).map((_, index) => (
-                        <Star key={index} size={14} fill="currentColor" className={index < review.rating ? "isFilled" : ""} />
-                      ))}
-                    </div>
-                    <p>{review.quote}</p>
-                  </div>
-                  <div className="ownerActions">
-                    <button type="button" onClick={() => updateReviewStatus(review.id, "approved")}>
-                      Approve
-                    </button>
-                    <button type="button" onClick={() => updateReviewStatus(review.id, "rejected")}>
-                      Reject
-                    </button>
-                    <button type="button" onClick={() => deleteReview(review.id)}>
-                      Delete
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <form className="ownerLogin" onSubmit={handleOwnerLogin}>
-              <label>
-                Owner access code
-                <input
-                  type="password"
-                  value={ownerCode}
-                  placeholder="Enter owner code"
-                  onChange={(event) => setOwnerCode(event.target.value)}
-                />
-              </label>
-              <button type="submit">Unlock reviews</button>
-              <small>Demo code: growgrid-owner</small>
-            </form>
-          )}
-        </div>
         <div className="reviewList">
           {approvedReviews.length === 0 ? (
             <p className="emptyReviews">No approved reviews yet.</p>
