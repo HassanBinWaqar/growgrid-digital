@@ -1981,19 +1981,9 @@ footer p {
   grid-column: 1 / -1;
 }
 
-.reviewNotice {
-  padding: 12px 14px;
-  margin: 0;
-  color: #12653a;
-  font-size: 14px;
-  font-weight: 850;
-  background: #e9fbf1;
-  border: 1px solid #bfeecf;
-  border-radius: 8px;
-}
-
 .ownerReviewPanel {
   display: grid;
+  grid-column: 2;
   gap: 14px;
   padding: 22px;
   background: #fff;
@@ -2161,13 +2151,11 @@ blockquote {
   margin-bottom: 18px;
 }
 
-.testimonialTop img {
-  width: 54px;
-  height: 54px;
-  border: 3px solid #fff;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 12px 28px rgba(21, 39, 70, 0.15);
+.testimonialTop.noAvatar {
+  align-items: flex-start;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #edf2f8;
 }
 
 .testimonialTop strong {
@@ -2643,6 +2631,77 @@ blockquote cite span {
   transform: translateY(-1px) scale(0.96);
 }
 
+.reviewPopup {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.reviewPopupBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 11, 25, 0.7);
+  border: 0;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.reviewPopupPanel {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  padding: 34px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #e2eaf5;
+  border-radius: 8px;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.32);
+  animation: modalIn 0.24s ease both;
+}
+
+.reviewPopupClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: #17243a;
+  background: #f1f5fb;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reviewPopupIcon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 18px;
+  color: #12653a;
+  background: #e9fbf1;
+  border: 1px solid #bfeecf;
+  border-radius: 50%;
+}
+
+.reviewPopupPanel h2 {
+  margin-bottom: 12px;
+}
+
+.reviewPopupPanel p:not(.eyebrow) {
+  color: #56637a;
+  line-height: 1.7;
+}
+
+.reviewPopupPanel .primaryBtn {
+  margin: 18px auto 0;
+}
+
 @keyframes modalIn {
   from {
     opacity: 0;
@@ -3016,6 +3075,10 @@ footer .footerSocials a:hover {
   .industries div,
   footer {
     grid-template-columns: 1fr;
+  }
+
+  .ownerReviewPanel {
+    grid-column: auto;
   }
 
   .ownerActions {

@@ -47,9 +47,9 @@ type Review = {
   id: number;
   quote: string;
   name: string;
+  email: string;
   role: string;
   result: string;
-  avatar: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
 };
@@ -416,9 +416,9 @@ const initialReviews: Review[] = [
     id: 1,
     quote: "GrowGrid Digital transformed our online presence and helped us scale revenue like never before.",
     name: "John Carter",
+    email: "john@carterlogistics.com",
     role: "CEO, Carter Logistics",
     result: "+64% qualified leads",
-    avatar: "/client-avatar-1.jpg",
     status: "approved",
     createdAt: "2026-06-20T10:00:00.000Z",
   },
@@ -426,9 +426,9 @@ const initialReviews: Review[] = [
     id: 2,
     quote: "The best marketing investment we've made. Professional, reliable, and results-driven team.",
     name: "Sarah Wilson",
+    email: "sarah@brighthomes.com",
     role: "Marketing Director, Bright Homes",
     result: "2.4x marketing ROI",
-    avatar: "/client-avatar-2.jpg",
     status: "approved",
     createdAt: "2026-06-21T10:00:00.000Z",
   },
@@ -436,9 +436,9 @@ const initialReviews: Review[] = [
     id: 3,
     quote: "Their reporting finally connected our ad spend to pipeline, not just clicks and impressions.",
     name: "Mia Chen",
+    email: "mia@northlinestudio.com",
     role: "Founder, Northline Studio",
     result: "-31% cost per lead",
-    avatar: "/client-avatar-3.jpg",
     status: "approved",
     createdAt: "2026-06-22T10:00:00.000Z",
   },
@@ -467,11 +467,13 @@ function App() {
   const [selectedService, setSelectedService] = useState<(typeof services)[number] | null>(null);
   const [isLeadSubmitted, setIsLeadSubmitted] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
-  const [reviewNotice, setReviewNotice] = useState("");
+  const [hasLoadedReviews, setHasLoadedReviews] = useState(false);
+  const [isReviewPopupOpen, setIsReviewPopupOpen] = useState(false);
   const [isOwnerMode, setIsOwnerMode] = useState(false);
   const [ownerCode, setOwnerCode] = useState("");
   const [reviewForm, setReviewForm] = useState({
     name: "",
+    email: "",
     role: "",
     quote: "",
   });
@@ -488,11 +490,23 @@ function App() {
     } catch {
       window.localStorage.removeItem(reviewStorageKey);
     }
+
+    setHasLoadedReviews(true);
   }, []);
 
   useEffect(() => {
+    if (!window.localStorage.getItem(reviewStorageKey)) {
+      setHasLoadedReviews(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedReviews) {
+      return;
+    }
+
     window.localStorage.setItem(reviewStorageKey, JSON.stringify(reviews));
-  }, [reviews]);
+  }, [hasLoadedReviews, reviews]);
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -542,32 +556,52 @@ function App() {
     };
   }, [selectedService]);
 
+  useEffect(() => {
+    if (!isReviewPopupOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsReviewPopupOpen(false);
+      }
+    };
+
+    document.body.classList.add("modalOpen");
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.classList.remove("modalOpen");
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isReviewPopupOpen]);
+
   const handleReviewSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const name = reviewForm.name.trim();
+    const email = reviewForm.email.trim();
     const role = reviewForm.role.trim();
     const quote = reviewForm.quote.trim();
 
-    if (!name || !role || !quote) {
+    if (!name || !email || !role || !quote) {
       return;
     }
 
-    const avatarIndex = (reviews.length % 4) + 1;
     const nextReview: Review = {
       id: Date.now(),
       name,
+      email,
       role,
       quote,
       result: "Awaiting approval",
-      avatar: `/client-avatar-${avatarIndex}.jpg`,
       status: "pending",
       createdAt: new Date().toISOString(),
     };
 
     setReviews((currentReviews) => [nextReview, ...currentReviews]);
-    setReviewForm({ name: "", role: "", quote: "" });
-    setReviewNotice("Thanks. Your review was submitted and is waiting for owner approval.");
+    setReviewForm({ name: "", email: "", role: "", quote: "" });
+    setIsReviewPopupOpen(true);
   };
 
   const handleOwnerLogin = (event: FormEvent<HTMLFormElement>) => {
@@ -944,23 +978,36 @@ function App() {
             Name
             <input
               type="text"
+              required
               value={reviewForm.name}
               placeholder="Your name"
               onChange={(event) => setReviewForm((form) => ({ ...form, name: event.target.value }))}
             />
           </label>
           <label>
-            Company / Role
+            Email
+            <input
+              type="email"
+              required
+              value={reviewForm.email}
+              placeholder="you@company.com"
+              onChange={(event) => setReviewForm((form) => ({ ...form, email: event.target.value }))}
+            />
+          </label>
+          <label>
+            Designation
             <input
               type="text"
+              required
               value={reviewForm.role}
-              placeholder="CEO, Carter Logistics"
+              placeholder="CEO, Marketing Manager, Founder"
               onChange={(event) => setReviewForm((form) => ({ ...form, role: event.target.value }))}
             />
           </label>
           <label className="reviewFull">
             Review
             <textarea
+              required
               value={reviewForm.quote}
               placeholder="Share your experience with GrowGrid Digital..."
               onChange={(event) => setReviewForm((form) => ({ ...form, quote: event.target.value }))}
@@ -969,7 +1016,6 @@ function App() {
           <button className="primaryBtn reviewFull" type="submit">
             Submit Review <ArrowRight size={18} />
           </button>
-          {reviewNotice ? <p className="reviewNotice reviewFull">{reviewNotice}</p> : null}
         </form>
         <div className="ownerReviewPanel">
           <div className="ownerPanelHeader">
@@ -1029,8 +1075,7 @@ function App() {
           ) : null}
           {approvedReviews.map((testimonial) => (
             <blockquote key={testimonial.id}>
-              <div className="testimonialTop">
-                <img src={testimonial.avatar} alt={`${testimonial.name} client portrait`} loading="lazy" />
+              <div className="testimonialTop noAvatar">
                 <div>
                   <div className="stars">
                     {Array.from({ length: 5 }).map((_, index) => (
@@ -1265,6 +1310,25 @@ function App() {
       >
         <MessageCircle size={26} />
       </a>
+      {isReviewPopupOpen ? (
+        <div className="reviewPopup" role="dialog" aria-modal="true" aria-labelledby="review-popup-title">
+          <button className="reviewPopupBackdrop" type="button" aria-label="Close review confirmation" onClick={() => setIsReviewPopupOpen(false)} />
+          <div className="reviewPopupPanel">
+            <button className="reviewPopupClose" type="button" aria-label="Close review confirmation" onClick={() => setIsReviewPopupOpen(false)}>
+              <X size={20} />
+            </button>
+            <div className="reviewPopupIcon">
+              <CheckCircle2 size={30} />
+            </div>
+            <p className="eyebrow">Review Submitted</p>
+            <h2 id="review-popup-title">Thank you for your feedback.</h2>
+            <p>Your review has been sent to the website owner. It will appear publicly after approval.</p>
+            <button className="primaryBtn" type="button" onClick={() => setIsReviewPopupOpen(false)}>
+              Continue Browsing <ArrowRight size={16} />
+            </button>
+          </div>
+        </div>
+      ) : null}
       {selectedService ? (
         <div className="serviceModal" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
           <button className="serviceModalBackdrop" type="button" aria-label="Close service details" onClick={() => setSelectedService(null)} />
