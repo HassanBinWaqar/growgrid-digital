@@ -1,4 +1,4 @@
-import { StrictMode, type FormEvent, useEffect, useState } from "react";
+import { StrictMode, type FormEvent, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowRight,
@@ -529,6 +529,7 @@ async function sha256(value: string) {
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServicesMenuOpen, setIsServicesMenuOpen] = useState(false);
   const [isDashboardView, setIsDashboardView] = useState(() => window.location.hash === "#review-dashboard");
   const [selectedService, setSelectedService] = useState<(typeof services)[number] | null>(null);
   const [isLeadSubmitted, setIsLeadSubmitted] = useState(false);
@@ -556,6 +557,7 @@ function App() {
     timeline: "",
     message: "",
   });
+  const servicesMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleHashChange = () => setIsDashboardView(window.location.hash === "#review-dashboard");
@@ -634,6 +636,40 @@ function App() {
       window.removeEventListener("resize", handleResize);
     };
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (!isServicesMenuOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!servicesMenuRef.current?.contains(event.target as Node)) {
+        setIsServicesMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsServicesMenuOpen(false);
+      }
+    };
+
+    const handleResize = () => {
+      if (window.innerWidth <= 1020) {
+        setIsServicesMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isServicesMenuOpen]);
 
   useEffect(() => {
     if (!selectedService) {
@@ -923,12 +959,69 @@ function App() {
             </span>
           </a>
           <div className="navLinks">
-            {navItems.map(([label, href]) => (
-              <a key={href} href={href}>
-                {label}
-                {label === "Services" ? <ChevronDown size={14} /> : null}
-              </a>
-            ))}
+            {navItems.map(([label, href]) => {
+              if (label === "Services") {
+                return (
+                  <div className="navServiceMenu" ref={servicesMenuRef} key={href}>
+                    <button
+                      className="navServiceTrigger"
+                      type="button"
+                      aria-expanded={isServicesMenuOpen}
+                      aria-controls="services-mega-menu"
+                      onClick={() => setIsServicesMenuOpen((isOpen) => !isOpen)}
+                    >
+                      Services
+                      <ChevronDown className={isServicesMenuOpen ? "isOpen" : ""} size={14} />
+                    </button>
+                    <div
+                      className={`navMegaMenu ${isServicesMenuOpen ? "isOpen" : ""}`}
+                      id="services-mega-menu"
+                      aria-hidden={!isServicesMenuOpen}
+                    >
+                      <div className="navMegaIntro">
+                        <span>Services</span>
+                        <strong>Digital growth capabilities</strong>
+                        <p>Choose from strategy, performance, creative, social, web, and conversion services.</p>
+                      </div>
+                      <div className="navMegaGrid">
+                        {services.map((service) => {
+                          const ServiceIcon = service.icon;
+
+                          return (
+                            <a
+                              key={service.title}
+                              href="#services"
+                              onClick={() => setIsServicesMenuOpen(false)}
+                            >
+                              <span className={`navMegaIcon ${service.tone}`}>
+                                <ServiceIcon size={17} />
+                              </span>
+                              <span>
+                                <strong>{service.title}</strong>
+                                <small>{service.category}</small>
+                              </span>
+                            </a>
+                          );
+                        })}
+                      </div>
+                      <a
+                        className="navMegaAction"
+                        href="#services"
+                        onClick={() => setIsServicesMenuOpen(false)}
+                      >
+                        View full services section <ArrowRight size={16} />
+                      </a>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <a key={href} href={href}>
+                  {label}
+                </a>
+              );
+            })}
           </div>
           <a className="navCta" href="/GrowGrid_Digital_Marketing_Blueprint.pdf" target="_blank" rel="noreferrer">
             Digital Marketing Blueprint <ArrowRight size={16} />
@@ -970,6 +1063,21 @@ function App() {
                   <ArrowRight size={16} />
                 </a>
               ))}
+            </div>
+            <div className="mobileServices">
+              <span>Services</span>
+              <div>
+                {services.map((service) => (
+                  <a
+                    key={service.title}
+                    href="#services"
+                    tabIndex={isMenuOpen ? 0 : -1}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {service.title}
+                  </a>
+                ))}
+              </div>
             </div>
             <a
               className="mobileMenuCta"
