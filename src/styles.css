@@ -3011,12 +3011,15 @@ footer .footerSocials a:hover {
     position: fixed;
     top: 76px;
     right: max(16px, calc((100vw - 1180px) / 2));
+    bottom: max(16px, env(safe-area-inset-bottom));
     left: max(16px, calc((100vw - 1180px) / 2));
     z-index: 25;
     display: block;
-    max-height: calc(100dvh - 98px);
+    height: auto;
+    max-height: none;
     overflow-y: auto;
     overscroll-behavior: contain;
+    touch-action: pan-y;
     padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 8px;
