@@ -1212,9 +1212,14 @@ function App() {
                   <span>Outcome</span>
                   <strong>{service.outcome}</strong>
                 </div>
-                <button className="serviceAction" type="button" onClick={() => setSelectedService(service)}>
+                <a
+                  className="serviceAction"
+                  href={createWhatsappLink(`Hi GrowGrid Digital, please tell me more about your ${service.title} service.`)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   View service details <ArrowRight size={15} />
-                </button>
+                </a>
               </article>
             );
           })}
@@ -1750,7 +1755,13 @@ function App() {
               <div>
                 <strong>Best outcome</strong>
                 <p>{selectedService.outcome}</p>
-                <a className="primaryBtn" href="#contact" onClick={() => setSelectedService(null)}>
+                <a
+                  className="primaryBtn"
+                  href={createWhatsappLink(`Hi GrowGrid Digital, please tell me more about your ${selectedService.title} service.`)}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setSelectedService(null)}
+                >
                   Discuss this service <ArrowRight size={16} />
                 </a>
               </div>
