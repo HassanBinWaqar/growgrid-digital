@@ -255,6 +255,69 @@ const services: Array<{
     tone: "navy",
     bullets: ["CRM workflows", "Lead scoring", "Sales handoff"],
   },
+  {
+    icon: BriefcaseBusiness,
+    title: "Creative Design Services",
+    category: "Visual content",
+    copy: "Professional creative assets for campaigns, launches, and everyday brand communication across channels.",
+    outcome: "A sharper visual presence across every touchpoint",
+    tone: "rose",
+    bullets: ["Social media graphics", "Static ad creatives", "Animated ad creatives"],
+  },
+  {
+    icon: Award,
+    title: "Branding & Logo Design",
+    category: "Identity systems",
+    copy: "Logo design, brand direction, and company profile design that make your business look credible and consistent.",
+    outcome: "A polished brand identity clients remember",
+    tone: "emerald",
+    bullets: ["Logo design", "Brand identity", "Company profiles"],
+  },
+  {
+    icon: Megaphone,
+    title: "Social Media Optimization",
+    category: "Platform readiness",
+    copy: "Profile optimization for LinkedIn, Instagram, Facebook, TikTok, and YouTube so every channel looks ready to convert.",
+    outcome: "Cleaner profiles with stronger trust signals",
+    tone: "amber",
+    bullets: ["LinkedIn optimization", "Instagram & Facebook", "TikTok & YouTube"],
+  },
+  {
+    icon: Lightbulb,
+    title: "Social Media Strategy",
+    category: "Content roadmap",
+    copy: "Planning brand goals, defining target audiences, and structuring a content roadmap before campaigns go live.",
+    outcome: "Purposeful content instead of random posting",
+    tone: "purple",
+    bullets: ["Brand goals", "Audience planning", "Content roadmap"],
+  },
+  {
+    icon: UsersRound,
+    title: "Social Media Management",
+    category: "Community operations",
+    copy: "Scheduling, publishing, comment replies, direct message handling, and review responses that build real relationships.",
+    outcome: "Active channels managed with consistency and care",
+    tone: "teal",
+    bullets: ["Post scheduling", "DMs & comments", "Review responses"],
+  },
+  {
+    icon: FileText,
+    title: "Content & Print Add-ons",
+    category: "Sales collateral",
+    copy: "Newsletter design, pamphlets, flyers, brochures, handy books, and e-books that support your sales process.",
+    outcome: "Useful branded materials for digital and print campaigns",
+    tone: "slate",
+    bullets: ["Newsletters", "Flyers & brochures", "Books & e-books"],
+  },
+  {
+    icon: LayoutDashboard,
+    title: "UX & UI Design",
+    category: "Product experience",
+    copy: "User journeys, interface design, and conversion-focused layouts for websites, landing pages, and digital products.",
+    outcome: "Cleaner experiences that guide visitors toward action",
+    tone: "cyan",
+    bullets: ["User journeys", "Interface design", "Conversion UX"],
+  },
 ];
 
 const stats = [
@@ -1423,7 +1486,7 @@ function App() {
               onChange={(event) => setLeadForm((form) => ({ ...form, service: event.target.value }))}
             >
               <option value="" disabled>Select service</option>
-              {services.slice(0, 8).map((service) => (
+              {services.map((service) => (
                 <option key={service.title}>{service.title}</option>
               ))}
             </select>
