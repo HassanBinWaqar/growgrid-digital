@@ -498,7 +498,7 @@ const initialReviews: Review[] = [
 
 const socialLinks = [
   ["LinkedIn", "https://www.linkedin.com/company/growgriddigital/", Linkedin],
-  ["Facebook", "https://www.facebook.com/profile.php?id=61591550873984", Facebook],
+  ["Facebook", "https://www.facebook.com/GrowGridDigital/", Facebook],
   ["Instagram", "https://www.instagram.com/growgriddigital?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==", Instagram],
 ] as const;
 
