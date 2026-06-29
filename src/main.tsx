@@ -1698,8 +1698,13 @@ function App() {
           <span>Developed by Hassan Bin Waqar</span>
         </div>
       </footer>
-      <a className="stickyMobileCta" href="#contact">
-        Book Free Audit <ArrowRight size={16} />
+      <a
+        className="stickyMobileCta"
+        href="/GrowGrid_Digital_Marketing_Blueprint.pdf"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Digital Marketing Blueprint <ArrowRight size={16} />
       </a>
       <a
         className="whatsappFloat"
