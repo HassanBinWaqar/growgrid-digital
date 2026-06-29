@@ -993,7 +993,12 @@ function App() {
               We help ambitious businesses generate qualified leads, increase sales, and scale
               through SEO, PPC, Social Media, and performance marketing.
             </p>
-            <a className="primaryBtn" href="#contact">
+            <a
+              className="primaryBtn"
+              href={createWhatsappLink("Hi GrowGrid Digital, I want to book a free strategy call for my business.")}
+              target="_blank"
+              rel="noreferrer"
+            >
               Get Free Strategy Call <ArrowRight size={18} />
             </a>
             <div className="trustStrip" aria-label="Rated by trusted businesses">
