@@ -930,8 +930,8 @@ function App() {
               </a>
             ))}
           </div>
-          <a className="navCta" href="#contact">
-            Get Free Strategy Call <ArrowRight size={16} />
+          <a className="navCta" href="/GrowGrid_Digital_Marketing_Blueprint.pdf" target="_blank" rel="noreferrer">
+            Digital Marketing Blueprint <ArrowRight size={16} />
           </a>
           <button
             className={`menuBtn ${isMenuOpen ? "isActive" : ""}`}
@@ -973,11 +973,13 @@ function App() {
             </div>
             <a
               className="mobileMenuCta"
-              href="#contact"
+              href="/GrowGrid_Digital_Marketing_Blueprint.pdf"
+              target="_blank"
+              rel="noreferrer"
               tabIndex={isMenuOpen ? 0 : -1}
               onClick={() => setIsMenuOpen(false)}
             >
-              Get Free Strategy Call <ArrowRight size={16} />
+              Digital Marketing Blueprint <ArrowRight size={16} />
             </a>
           </div>
         </nav>
